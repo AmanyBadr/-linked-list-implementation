@@ -1,0 +1,454 @@
+#include<stdio.h>
+#include<conio.h>
+#include<stdlib.h>
+#include<mem.h>
+#include<ctype.h>
+#include<string.h>
+
+struct student
+ {
+   char name[20];
+   int id;
+   int grade[3];
+
+ };
+
+struct Node
+ {
+  struct student stu;
+  struct Node * Prev;
+  struct Node * Next;
+ };
+ struct Node * Head;
+ struct Node * Tail;
+
+ // function to linked list;
+
+ struct student FillStudent(void);
+ struct Node * CreateNode(struct student st);
+ int AddNode (struct student st);
+ int InsertNode (struct student st, int loc);
+ void DisplayM(int num);
+ void PrintStudent (struct student s);
+ struct student SearchByName(char *n);
+ struct student SearchById(int d);
+ int Delete (int loc);
+ void FreeList (void);
+ void PrintNode (void);
+ void PrintReverse (void);
+
+
+ int main()
+
+ {
+  struct Node node;
+
+  int num,num2,i;
+  int n;
+  //struct student st;
+  clrscr();
+  DisplayM(num2);
+  getch();
+  return 0;
+ }
+
+ //implementation of function
+  void DisplayM (int num)
+  {
+
+    int mssg;
+
+    struct student st;
+
+    gotoxy(1,5);
+    printf("1.Add Node \n");
+    printf("2.Insert Node \n");
+    printf("3.Search By Name \n");
+    printf("4.Search By ID \n");
+    printf("5.Print Node forword \n");
+    printf("6.Print Node reversed \n");
+    printf("7.Delet Node \n");
+    printf("8.Free List \n");
+    printf("9.Exit \n");
+    do
+    {
+      printf(" \n please enter the number of your choice: ");
+      scanf("%d",&num);
+      if(num == 1)
+       {
+
+	st = FillStudent ();
+	mssg =  AddNode(st);
+
+	if (mssg == 1)
+
+	  {
+	    printf(" your node is created \n");
+
+	  }
+	else
+	  {
+	     printf(" node is not created");
+
+	  }
+	}
+
+       if(num == 2)
+	 {
+	    int loc,val;
+	    st  = FillStudent();
+	    printf(" \n enter the location you want to add node");
+	    scanf("%d",&loc);
+	    val = InsertNode(st,loc);
+	    if(val == 1)
+	     {
+	      printf(" \n your node is inserted");
+	     }
+	    else
+	     {
+		printf(" \n we can't insert your data");
+	     }
+	 }
+
+       if (num == 3)
+	 {
+	   char *n;
+	   struct student stu;
+
+	   printf(" \n Enter the name you want to search :");
+	   scanf("%s",n);
+
+	    stu = SearchByName(n);
+	   if (stu.id == -1)
+	     {
+	      printf(" \n no data Found");
+	     }
+	    else
+	     {
+	       PrintStudent(stu);
+	     }
+	 }
+
+	 if (num == 4)
+	   {
+	     int d;
+	     struct student stu;
+	     printf(" \n enter the id you want to search");
+	     scanf("%d",&d);
+	     stu = SearchById(d);
+	     if (stu.id == -1)
+	      {
+	       printf(" \n no data found");
+
+	      }
+	       else
+		{
+		  PrintStudent(stu);
+		}
+	   }
+
+       if(num ==5)
+	 {
+	   PrintNode ();
+	 }
+
+       if(num == 6)
+	 {
+	   PrintReverse ();
+	 }
+
+       if(num == 7)
+	{
+	  int locD, valD;
+	  printf("Enter the location node you want to delete it:");
+	  scanf("%d",&locD);
+	  valD = Delete(locD);
+	  if (valD == 1)
+	    {
+	      printf(" \n your Data is Deleted");
+	    }
+	   else
+	    {
+	      printf(" \n your Data Doesn't Deleted");
+	    }
+	}
+
+	 if(num == 8)
+	 {
+	   FreeList();
+	   printf(" \n Your Link is Deleted ");
+	 }
+
+    }while (num !=9);
+
+  }
+
+
+
+
+ struct student FillStudent()
+  {
+     struct student s;
+     int i;
+     printf(" \n insert data for your Node \n");
+     printf(" \n  Enter your name: ");
+     scanf("%s",s.name);
+     printf(" \n  Enter your id: ");
+     scanf("%d", &s.id);
+     printf(" \n  Enter your grads: " );
+     for(i=0;i<3;i++)
+      {
+	 scanf("%d",&s.grade[i]);
+
+      }
+
+      return  s;
+
+   }
+
+      void PrintStudent (struct student s)
+    {
+     int i;
+     printf("\n");
+     printf(" name is: ");
+     printf("%s",s.name);
+     printf(" \t ID is: ");
+     printf("%d",s.id);
+     printf(" \t grads is: ");
+     for(i=0;i<3;i++)
+       {
+	 printf("%d ",s.grade[i]);
+       }
+
+    }
+
+
+
+ struct Node * CreateNode (struct student stu)
+ {
+   struct Node * ptr;
+   ptr = (struct Node * ) malloc (sizeof(struct Node));
+   if(ptr)
+    {
+      ptr->stu = stu;
+      ptr->Next=NULL;
+      ptr->Prev=NULL;
+    }
+    return ptr;
+ }
+
+
+ int AddNode (struct student stu)
+ {
+   int rval=0;
+   struct Node * ptr;
+   ptr = CreateNode(stu);
+   if (ptr)
+   {
+     if (!Head)
+      {
+	Head = Tail = ptr;
+      }
+      else
+      {
+	Tail->Next =ptr;
+	ptr->Prev = Tail;
+	Tail = ptr;
+      }
+      rval=1;
+   }
+
+   return rval;
+ }
+
+  //Insert Impelementation;
+
+ int InsertNode(struct student stu,int loc)
+  {
+    int i;
+    int val=0;
+    struct Node * temp;
+    struct Node * ptr;
+    ptr = CreateNode (stu);
+    if(ptr)
+     {
+       if(!Head)
+	 {
+	   Head = Tail = ptr;
+	 }
+	else
+	 {
+	   if(loc == 0)
+	      {
+		 Head ->Prev = ptr;
+		 ptr  ->Next = Head;
+		 Head = ptr;
+	      }
+	    else
+	      {
+		 temp=Head;
+		 for(i=0;i<loc-1 && temp;i++)
+		    {
+		      temp = temp ->Next;
+		    }
+		  if (temp == NULL || temp == Tail)
+		    {
+		      ptr ->Prev = Tail;
+		      Tail ->Next = ptr;
+		      Tail = ptr;
+		    }
+		  else
+		    {
+		      temp -> Next -> Prev = ptr;
+		      ptr -> Next = temp -> Next;
+		      ptr -> Prev = temp;
+		      temp -> Next = ptr;
+		    }
+	      }
+
+	 }
+	  val =1;
+     }
+
+     return val;
+
+  }
+
+ struct student SearchByName(char *n)
+  {
+     struct Node * ptr;
+
+
+     ptr =Head;
+
+     while(ptr && strcmp(ptr->stu.name ,n))
+      {
+       ptr = ptr ->Next;
+
+      }
+       if (!ptr)
+       {
+	ptr->stu.id=-1;
+       }
+
+       return ptr-> stu;
+  }
+ struct student SearchById (int d)
+  {
+    struct Node * ptr;
+
+
+    ptr=Head;
+    while (ptr && ptr->stu.id != d)
+     {
+
+       ptr = ptr-> Next;
+
+     }
+       if(!ptr)
+	  {
+	   ptr->stu.id=-1;
+
+	  }
+      return ptr->stu;
+
+  }
+
+ int Delete(int loc)
+  {
+     int i, valD=0;
+     struct Node *ptr, *temp;
+     if (Head)
+       {
+	 if(loc == 0)
+	   {
+	     ptr = Head;
+	     if(Head == Tail)
+	       {
+		 Head = Tail = NULL;
+	       }
+	      else
+	       {Head = Head->Next;
+		Head->Prev = NULL;
+	       }
+	      free(ptr);
+	      valD=1;
+	   }
+	  else
+	   {
+	     temp = Head;
+	     for (i = 0 ;i<loc;i++)
+	       {
+		temp = temp->Next;
+	       }
+	     if (temp)
+	       {
+		if (temp == Tail)
+		 {
+		  Tail = Tail->Prev;
+		  Tail->Next = NULL;
+		 }
+		else
+		 {
+		   temp -> Prev -> Next = temp -> Next;
+		   temp ->Next -> Prev = temp -> Prev;
+
+		 }
+		free(temp);
+		valD = 1;
+	       }
+	   }
+       }
+      return valD;
+
+  }
+
+ void FreeList()
+  {
+     struct Node * temp;
+     while (Head)
+      {
+	temp = Head;
+	Head = Head->Next;
+	free(temp);
+      }
+       Tail = NULL;
+  }
+
+ void PrintNode ()
+ {
+   struct Node * ptr;
+   ptr = Head;
+     if (Head == NULL && Tail == NULL)
+     {
+      printf("No list found");
+     }
+    else {
+	   printf("the linked Data is \n");
+	   while (ptr != NULL)
+	    {
+
+	       PrintStudent(ptr->stu);
+	       ptr=ptr->Next;
+
+	    }
+
+    printf("\n");
+    }
+
+ }
+
+ void PrintReverse (void)
+ {
+  //int flag =0;
+  struct Node * ptr;
+  ptr = Tail;
+  printf ("the rversed linked list is: \n");
+  while (ptr !=NULL)
+  {
+   PrintStudent(ptr->stu);
+   ptr=ptr->Prev;
+
+  }
+ }
+
